@@ -1,0 +1,377 @@
+/*General*/
+:root {
+  --mcolor: #1c1c1c;
+  --scolor: #fdd503;
+  --tcolor: #660bef;
+  --fcolor: #f5487f;
+  --selectedcolor: rgb(0, 166, 80);
+  --mfontcolor: #ffffff;
+  --sfontcolor: #ffffff;
+}
+/*
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+*/
+@font-face {
+  font-family: 'BricolageGrotesque-ExtraBold';
+  src: url('./others/static/BricolageGrotesque-ExtraBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'BricolageGrotesque-light';
+  src: url('./others/static/BricolageGrotesque-Light.ttf') format('truetype');
+}
+
+body {
+  background: radial-gradient(rgba(255, 255, 255, 0.2) 8%, transparent 8%);
+  background-color: var(--mcolor);
+  background-position: 0% 0%;
+  background-size: 2vmin 2vmin;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  color: var(--mfontcolor);
+  font-family: 'BricolageGrotesque-light';
+  font-size: 1rem;
+}
+
+
+.subtitle {
+  margin-left: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.sub-text {
+  font-size: 1rem;
+  margin-left: 3rem;
+  color: var(--mfontcolor);
+}
+
+.Heatmap {
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  max-height: 100vh;
+  overflow: auto;
+  grid-auto-flow: column;
+  padding: 3%;
+  width: 100%;
+  height: fit-content;
+  overflow: hidden;
+
+}
+
+.HeatmapPadding {
+  height: 100%;
+  background-color: var(--scolor);
+  display: flex;
+  width: 100%;
+
+}
+
+.HeatmapCell {
+  width: 100%;
+
+  aspect-ratio: 1;
+}
+
+
+.HeatmapYearContainer {
+  display: flex;
+  color: #000;
+  width: 100%;
+  height: fit-content;
+  transition: 300ms ease;
+  cursor: pointer;
+}
+
+.Selected {
+  width: 3%;
+  transition: .3s ease-in-out;
+  background-color: var(--selectedcolor);
+  overflow: hidden;
+  display: inline-flex;
+  transform: translateX(-100%);
+  align-items: center;
+  justify-content: center;
+  z-index: -1;
+
+}
+
+.Selected.active {
+  transform: translateX(0);
+}
+
+.Checkmark {
+  color: var(--selectedcolor);
+}
+
+.HeatmapYearContainer:hover {
+  transform: scale(1.03, 1.03);
+}
+
+.HeatmapPaddingCell {
+  text-align: center;
+  font-size: xx-small;
+  margin-right: 1rem;
+}
+
+.HeatmapList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  float: right;
+  width: 100%;
+  justify-content: center;
+}
+
+.HeatmapContainer {
+  margin: 4rem;
+  margin-top: 0;
+  padding-top: 2rem;
+  font-family: 'BricolageGrotesque-light';
+}
+
+.day-container {
+  width: 100%;
+  height: 2rem;
+  color: var(--mcolor);
+  display: flex;
+  align-items: center;
+}
+
+.day-value {
+  background-color: white;
+}
+
+.YearTitle {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  font-size: large;
+  color: var(--mfontcolor);
+  padding-right: .5rem;
+  margin-right: 1rem;
+
+}
+
+.YearTitleChar {
+  text-align: center;
+
+}
+
+.HeatmapPhraseContainer {
+  float: left;
+  color: var(--mfontcolor);
+  display: inline-grid;
+  max-width: 40%;
+  flex-direction: column;
+}
+
+.YearsContaierTitle {
+  font-size: 6rem;
+  letter-spacing: -.5rem;
+}
+
+
+.HeatmapGraphs {
+  display: flex;
+}
+
+
+.pie-chart {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #f06 0% 30%,   /* Color and size of the first slice */
+    #3af 30% 75%,  /* Color and size of the second slice */
+    #fc0 75% 100%  /* Color and size of the third slice */
+  );
+}
+.AnalysisTypeSelector {
+  width: 20rem;
+  height: 2rem;
+  background-color: var(--scolor);
+  display: flex;
+  flex-direction: row;
+}
+.Doughnut{
+  display:  flex;
+  width: 70%;
+  flex-direction: row-reverse;
+  padding-right: 5rem;
+}
+.Arrow {
+  padding: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.Arrow.Left {
+  transform: rotate(180deg);
+}
+
+.AnalysisType {
+  width: 100%;
+  color: var(--mcolor);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ColumnChartContainer {
+  width: 75%;
+  margin-left: 5%;
+}
+
+.YearSelector {
+  display: flex;
+}
+
+.YearSelectorButton {
+  width: fit-content;
+  cursor: pointer;
+  padding: .5rem;
+  margin: .5rem;
+}
+
+.YearSelectorButton.selected {
+  background-color: var(--scolor);
+  color: var(--mcolor);
+}
+
+.LongestStreakContainer {
+  display: inline-flex;
+  flex-direction: row;
+  font-family: "BricolageGrotesque-light";
+  margin-bottom: 50vh;
+}
+
+.popup-square {
+  position: absolute;
+  width: 5rem;
+  height: 5rem;
+  background-color: var(--mcolor);
+  top: 100%;
+  color: var(--mfontcolor);
+}
+
+.popup-month {
+  width: 5rem;
+  background-color: var(--mcolor);
+  bottom: 100%;
+  color: var(--mfontcolor);
+}
+
+.LongestStreak {
+  font-size: 10rem;
+  letter-spacing: -1rem;
+  color: var(--scolor);
+
+}
+
+
+.popup-square-duration {
+  font-size: 2rem;
+}
+
+.StreakPhrase {
+  width: 10rem;
+  font-size: 3rem;
+  float: left;
+  margin-left: 3rem;
+}
+
+.streakDate {
+  padding: 2rem;
+  width: fit-content;
+}
+
+.LongestStreakDays {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+
+
+.WrappedContainer {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--scolor);
+  padding: 2%;
+}
+
+.WrappedContainer {
+  filter: blur(0);
+
+}
+
+.yearTitleWrapped {
+  color: #1c1c1c;
+  font-size: xx-large;
+}
+
+
+
+.HeatmapSmall {
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  max-height: 100vh;
+  overflow: auto;
+  grid-auto-flow: column;
+  color: var(--mcolor);
+  width: 100%;
+  height: fit-content;
+  overflow: hidden;
+
+}
+
+.HeatmapPaddingSmall {
+  display: flex;
+  width: 100%;
+
+}
+
+.HeatmapPaddingCellSmall {
+  text-align: center;
+  font-size: xx-small;
+  color: var(--mcolor);
+}
+
+.LongestStreakContainerSmall {
+  color: #1c1c1c;
+  display: inline-flex;
+  flex-direction: column;
+  font-family: "BricolageGrotesque-light";
+  margin-bottom: 50vh;
+}
+
+.LongestStreakSmall {
+  color: var(--tcolor);
+  line-height: .8;
+  font-size: 8rem;
+}
+
+.YearSelectorButtonSmall.selected {
+  background-color: var(--tcolor) !important;
+  color: var(--scolor);
+
+}
+
+/*COMMUTE GRAPH*/
+.CommuteGraphContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 70vh;
+}

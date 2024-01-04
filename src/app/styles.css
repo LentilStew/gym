@@ -1,0 +1,236 @@
+/*General*/
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.month-period-input {
+  margin-left: 3rem;
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+}
+.page {
+  display: flex;
+  width: 100%;
+}
+
+#content {
+  cursor: default;
+  height: 100%;
+  width: 55%;
+  padding-top: 10vh;
+
+  padding-right: 5%;
+  margin-bottom: 30%;
+}
+
+#question {
+  overflow: hidden;
+  width: 100%;
+}
+
+.subtitle {
+  margin-left: 1.5rem;
+  font-size: 1.5rem;
+}
+.years {
+  margin-left: 3rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: fit-content;
+  height: fit-content;
+}
+
+.sub-text {
+  font-size: 1rem;
+  margin-left: 3rem;
+  color: #5b5b5b;
+}
+
+.button {
+  color: #5b5b5b;
+  cursor: pointer;
+}
+.year-period-input {
+  display: flex;
+  flex-direction: column;
+}
+.months-container {
+  font-family: "Roboto Mono", monospace;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: fit-content;
+  height: fit-content;
+}
+
+.button:hover {
+  color: white;
+  transition: 0.7s;
+}
+
+.button.selected {
+  color: white;
+  cursor: default;
+}
+
+/*animations*/
+@keyframes letterAppear {
+  0% {
+    display: inline-block;
+    transform: translate3d(0px, 100%, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0px, 0%, 0);
+    opacity: 1;
+  }
+}
+
+.letter-appear {
+  /*animation: letterAppear 0.7s forwards;*/
+  display: inline-block;
+  position: relative;
+  margin: 0;
+  width: 100%;
+}
+
+/*automcomplete*/
+
+
+
+.place-select-bar {
+  cursor: text;
+  display: flex;
+  width: 25ch;
+  flex-direction: row;
+  border-bottom: white solid 0.2rem;
+  align-items: center;
+  padding: 0.5rem;
+  margin: 0.5rem;
+}
+.remove {
+  padding-right: 1rem;
+}
+.autocomplete {
+  color: #5b5b5b;
+  font-family: "Roboto Mono", monospace;
+  overflow: hidden;
+  white-space: pre;
+  font-size: 2rem;
+}
+
+.place-input {
+  background-color:transparent;
+  padding-right: 0;
+  border: none;
+  outline: none;
+  font-size: 2rem;
+  color: white;
+  font-family: "Roboto Mono", monospace;
+}
+
+#place-inputs {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+  height: 100%;
+}
+.place-item {
+  color: #5b5b5b;
+}
+
+#places-container {
+  margin-left: 3rem;
+}
+@media only screen and (max-device-width: 480px) {
+  /* Media query for phones with a maximum width of 480px */
+  .overview {
+    display: none;
+  }
+}
+
+.all-places {
+  max-height: 25vh;
+  min-height: none;
+  width: 40ch;
+  margin-left: 6rem;
+  font-size: 1.25rem;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  transition: max-height 0.3s ease;
+}
+.all-places::-webkit-scrollbar {
+  display: none;
+}
+.all-places.hidden {
+  max-height: 0;
+  overflow: hidden;
+}
+.hide-place-options {
+  padding: 0.5rem;
+  margin: 0.5rem;
+}
+.button.hide{
+  width: fit-content;
+  display: inline-block;
+}
+.button.add-remove {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  width: 3rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.arrow-rotated {
+  transform: rotate(180deg);
+}
+
+.submit-place{
+  width: fit-content;
+  margin-right: 10%;
+  height: 20vh;
+  float: right;
+}
+
+.upload-takeout-container {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  margin-top: 20px;
+}
+
+
+/* Hide the default input file button */
+input[type='file'] {
+  display: none;
+}
+
+.inputContainter{
+  display: flex;
+  flex-direction: column;
+}
+
+.button.takeout{
+  margin-left: 3rem;
+}
+
+.file-tree{
+  font-family: monospace;
+  font-size: medium;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: auto;
+  width: 30vw;
+  white-space: pre;
+}
+
+.tree-directory{
+  white-space: pre;
+}
+
