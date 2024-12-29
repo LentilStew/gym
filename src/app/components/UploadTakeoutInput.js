@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import {FILELIMIT} from "./generalComponents.js"
+import { FILELIMIT } from "./generalComponents.js"
 
 function FilesUploaded({ files }) {
   const renderFileTree = (files, indentLevel = 0) => {
@@ -7,7 +7,7 @@ function FilesUploaded({ files }) {
       const isDirectory = file.type === "directory";
       return (
         <div key={index}>
-          {isDirectory && indentLevel !==0 ? Array(indentLevel+1).fill("│\u00A0\u00A0\u00A0").join("") : ""}
+          {isDirectory && indentLevel !== 0 ? Array(indentLevel + 1).fill("│\u00A0\u00A0\u00A0").join("") : ""}
           <div
             key={index}
             className={isDirectory ? "tree-directory" : "tree-file"}
@@ -68,24 +68,15 @@ function convertFilesToObject(files) {
 
 const UploadTakeout = ({ onFileChange }) => {
   const inputRef = useRef(null);
-  const [filesUploaded, setFilesUploaded] = useState([]);
 
   const handleFileChange = () => {
-
-    const files = inputRef.current.files;
-    if (files.length > FILELIMIT) {
-      // Show an error message or take any other action here
-      alert(`You can select a maximum of ${FILELIMIT} files. ${files.length} selected.`);
-      
-      // Clear the selected files from the input element
-      inputRef.current.value = '';
-      return;
+    if (inputRef.current.files.length !== 1) {
+      return
     }
+    const file = inputRef.current.files[0];
 
-    setFilesUploaded(convertFilesToObject(files));
     if (typeof onFileChange === "function") {
-
-      onFileChange(Array.from(files));
+      onFileChange(file);
     }
   };
 
@@ -114,13 +105,8 @@ const UploadTakeout = ({ onFileChange }) => {
           ref={inputRef}
           id="takeout-upload"
           type="file"
-          webkitdirectory="true"
-          directory="true"
           onChange={handleFileChange}
         />
-      </div>
-      <div style={{ position: "absolute", right: "3rem", top: "2rem" }}>
-        <FilesUploaded files={filesUploaded} />
       </div>
     </div>
   );

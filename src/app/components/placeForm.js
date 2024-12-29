@@ -23,79 +23,80 @@ async function readAsTextAsync(file) {
     reader.readAsText(file);
   });
 }
-
-async function filesToPlacesDict(filesArray) {
+async function fileToPlacesDict(file) {
   const placesDict = {};
   let currActivitySegment = [];
   let nextActivitySegment = [];
 
-  const promises = filesArray.map(async (file) => {
-    try {
-      const fileContent = await readAsTextAsync(file);
-
-      const jsonObject = JSON.parse(fileContent);
-      jsonObject["timelineObjects"].forEach((obj) => {
+  try {
+    const fileContent = await readAsTextAsync(file);
+    const jsonObject = JSON.parse(fileContent);
+    jsonObject["semanticSegments"].forEach((obj) => {
 
 
-        if (obj["activitySegment"]) {
-          const { activityType, distance } = obj["activitySegment"]
-          const { startTimestamp, endTimestamp } = obj["activitySegment"]["duration"];
-          const endLat = obj["activitySegment"]["endLocation"]["latitudeE7"];
-          const endLong = obj["activitySegment"]["endLocation"]["longitudeE7"];
+      if ('activity' in obj) {
+        const distance = obj["activity"]["distanceMeters"];
+        const activityType = obj["activity"]["topCandidate"]["type"];
+        const startTimestamp = obj["startTime"];
+        const endTimestamp = obj["endTime"];
 
-          const startLat = obj["activitySegment"]["startLocation"]["latitudeE7"];
-          const startLong = obj["activitySegment"]["startLocation"]["longitudeE7"];
+        const endLat = obj["activity"]["end"]["latLng"].split(", ")[0];
+        const endLong = obj["activity"]["end"]["latLng"].split(", ")[1];
+        const startLat = obj["activity"]["start"]["latLng"].split(", ")[0];
+        const startLong = obj["activity"]["start"]["latLng"].split(", ")[1];
+
+        currActivitySegment.push(new ActivitySegment(
+          formatDate(startTimestamp),
+          formatTime(startTimestamp),
+          new Date(endTimestamp) - new Date(startTimestamp),
+          distance,
+          activityType,
+          startLong,
+          startLat,
+          endLong,
+          endLat
+        ))
+        return
+      }
+      else if ('visit' in obj) {
+        const address = obj['visit']["topCandidate"]["placeLocation"]["latLng"];
+        const placeId = obj['visit']["topCandidate"]["placeId"];
+        const name = obj['visit']["topCandidate"]["semanticType"];
+
+        const startTimestamp = obj["startTime"];
+        const endTimestamp = obj["endTime"];
+
+        placesDict[placeId] =
+          placesDict[placeId] || new Place(address, placeId, name);
+
+        nextActivitySegment = [];
+        const newVisit = new Visit(
+          formatDate(startTimestamp),
+          formatTime(startTimestamp),
+          new Date(endTimestamp) - new Date(startTimestamp),
+          nextActivitySegment,
+          currActivitySegment
+        );
+
+        currActivitySegment = nextActivitySegment
+        placesDict[placeId].addVisit(newVisit);
+      }
 
 
-          currActivitySegment.push(new ActivitySegment(
-            formatDate(startTimestamp),
-            formatTime(startTimestamp),
-            new Date(endTimestamp) - new Date(startTimestamp),
-            distance,
-            activityType,
-            startLong,
-            startLat,
-            endLong,
-            endLat
-          ))
-          return
-        }
-        else if (obj["placeVisit"]) {
-
-          const { address, placeId, name } = obj["placeVisit"]["location"];
-          const { startTimestamp, endTimestamp } = obj["placeVisit"]["duration"];
-
-          placesDict[placeId] =
-            placesDict[placeId] || new Place(address, placeId, name);
-
-          nextActivitySegment = [];
-          const newVisit = new Visit(
-            formatDate(startTimestamp),
-            formatTime(startTimestamp),
-            new Date(endTimestamp) - new Date(startTimestamp),
-            nextActivitySegment,
-            currActivitySegment
-          );
-
-          currActivitySegment = nextActivitySegment
-          placesDict[placeId].addVisit(newVisit);
-        }
-
-
-      });
-    } catch (error) {
-      console.error("Error reading file:", error);
-    }
-  });
-  await Promise.all(promises);
+    });
+  } catch (error) {
+    console.error("Error reading file:", error);
+  }
   return placesDict;
 }
+
 export function PlaceForm({ onPlaceSelected }) {
 
   const [graphData, setGraphData] = useState({});
   const [yearPeriod, setYearPeriod] = useState([]);
   const [autocompletePlaces, setAutocompletePlaces] = useState([]);
   const [placesDict, setPlacesDict] = useState({});
+
   function getPlaces() {
 
     let { endYear, startYear, startMonth, endMonth, places } = graphData;
@@ -127,37 +128,31 @@ export function PlaceForm({ onPlaceSelected }) {
         visits: visitInPeriod,
         placeId: autocompletePlace.placeId,
         address: placesDict[autocompletePlace.placeId].address,
-        name: placesDict[autocompletePlace.placeId].name,
+        name: placesDict[autocompletePlace.placeId].getBestName(),
       };
     });
 
     return placesFromPeriod
   }
 
-  async function onFileChange(files) {
-    const placesFiles = files.filter((fileObj) =>
-      TAKEOUTFILEPATTERN.test(fileObj.name)
-    );
+  async function onFileChange(file) {
+    //const [startYear, endYear];
+    const newPlaceDict = await fileToPlacesDict(file);
 
-    const [startYear, endYear] = placesFiles.reduce(
-      (currStartEndYears, fileObj) => {
-        const fileYear = parseInt(fileObj.name.split("_")[0]);
+    const fileContent = await readAsTextAsync(file);
+    const jsonObject = JSON.parse(fileContent);
+  
+    let startYear = Infinity;
+    let endYear = -Infinity;
+  
+    for (const obj of jsonObject['semanticSegments']) {
+      const start = new Date(obj.startTime).getFullYear();
+      const end = new Date(obj.endTime).getFullYear();
+  
+      if (start < startYear) startYear = start;
+      if (end > endYear) endYear = end;
+    }
 
-        if (fileYear < currStartEndYears[0]) {
-          currStartEndYears[0] = fileYear;
-        }
-
-        if (fileYear > currStartEndYears[1]) {
-          currStartEndYears[1] = fileYear;
-        }
-
-        return currStartEndYears;
-      },
-      [Infinity, -Infinity]
-    );
-
-    const newPlaceDict = await filesToPlacesDict(placesFiles);
-    //TODO
     setAutocompletePlaces(
       Object.keys(newPlaceDict).map((placeId) => {
         return { name: newPlaceDict[placeId].getBestName(), placeId };
@@ -168,7 +163,7 @@ export function PlaceForm({ onPlaceSelected }) {
 
     setGraphData({
       ...graphData,
-      files,
+      file,
     });
 
     if (startYear === Infinity || endYear === -Infinity) return;
@@ -223,6 +218,7 @@ export function PlaceForm({ onPlaceSelected }) {
       </div>
       <div className="button submit-place unselectable" onClick={() => {
         let places = getPlaces()
+
         if (onPlaceSelected && places) {
           onPlaceSelected(places)
         }

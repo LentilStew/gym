@@ -35,7 +35,7 @@ export class Place {
   }
 
   getBestName() {
-    return this.name || this.address || this.id;
+    return this.placeId || this.name || this.address;
   }
 
   addVisit(newVisit) {

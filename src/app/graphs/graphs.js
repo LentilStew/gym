@@ -10,15 +10,24 @@ import { useState } from "react";
 import {CommuteGraphContainer} from "./pie/pie.js"
 
 export function Graphs({ places }) {
-    console.log(places)
-    const captureImage = () => {
 
-        htmlToImage.toPng(document.body)
+    const captureImage = () => {
+        const body = document.body;
+        const scale = 2; // Scaling factor
+    
+        // Get the dimensions of the body
+        const width = body.scrollWidth;
+        const height = body.scrollHeight;
+    
+        htmlToImage.toPng(body, {
+            width: width * scale,
+            height: height * scale,
+            style: { transform: `scale(${scale})`, transformOrigin: 'top left' },
+        })
             .then((dataUrl) => {
-                // You can save or display the captured image as needed
                 const link = document.createElement('a');
                 link.href = dataUrl;
-                link.download = 'captured-image.png';
+                link.download = 'captured-body.png';
                 link.click();
             })
             .catch((error) => {
